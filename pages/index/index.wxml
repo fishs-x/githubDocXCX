@@ -1,0 +1,17 @@
+<!-- pages/index.wxml -->
+<!-- <import src="/towxml/entry.wxml"/>
+<template is="entry" data="{{...article}}"/> -->
+<view class="h2w h2w-light" role="" aria-label="">
+		<view class="h2w__main" role="" aria-label="">
+				<view role="" aria-label="" wx:for="{{docs}}" wx:key="{{index}}">
+						<view class="h2w__h5" role="" aria-label="">
+								<navigator bindtap="inDetails" class="h2w__a" data-title="{{item.title}}" data-url="{{item.url}}" id="{{item.id}}" url="{{item.url}}" role="navigation" aria-label="">
+										{{item.title}}
+								</navigator>
+						</view>
+						<view class="h2w__blockquote" role="" aria-label="">
+								{{item.desc}}
+						</view>
+				</view>
+		</view>
+</view>

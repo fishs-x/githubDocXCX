@@ -1,0 +1,3 @@
+/* pages/markdown/markdown.wxss */
+@import '/towxml/style/main.wxss';
+@import '/towxml/style/theme/light.wxss';
