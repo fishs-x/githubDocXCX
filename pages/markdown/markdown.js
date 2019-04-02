@@ -52,6 +52,7 @@ Page({
     // 判断是否为外部请求
     if(url.indexOf('\/\/') > 0) {
       msg = '不支持外部链接';
+      this.clientCopy(url);
     }
     if (url[0] === '#') {
       msg = '不支持锚点';
@@ -79,6 +80,20 @@ Page({
     wx.navigateTo({
       url: "/pages/markdown/markdown?title="+this.data.title+"&url="+url
     });
+  },
+
+  /**
+   * 点击复制
+   */
+  clientCopy: function (data) {
+    wx.setClipboardData({
+      data: data
+    });
+    wx.getClipboardData({
+      success: function(res) {
+        console.log(res)
+      }
+    })
   },
 
   /**
@@ -126,8 +141,10 @@ Page({
       if (res.length >= 1048576) {
         res = res.substr(0, 1048576);
       }
+      wx.showLoading({title: '加载中…'});
       let data = app.towxml.toJson(res,'markdown');
       data = app.towxml.initData(data,{base:'https://xcs.fluobo.cn' + this.data.title + '/',app:this});
+      wx.hideLoading()
       this.setData({article: data,});
     });
   }

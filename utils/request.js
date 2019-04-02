@@ -1,4 +1,4 @@
-const HOST = 'https://xxx.cn';
+const HOST = 'https://xcs.fluobo.cn';
 let DEFAULT_REQ = {url: "", data: {}, method: "GET", header: {'Content-Type': 'application/json'}};
 const request = function (obj) {
     return new Promise(function (resolve, reject) {
