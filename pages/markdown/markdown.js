@@ -34,13 +34,10 @@ Page({
    */
   onClickHref: function (e) {
     let url = e.target.dataset._el.attr.href;
-    console.log(url, this.data);
     // 判断url是否存在
     if (!url || this.data.lock[url]) {
-      console.log('被锁了');
       return;
     }
-    console.log(url, this.data);
     // 加锁
     let that = this;
     this.data.lock[url] = true;

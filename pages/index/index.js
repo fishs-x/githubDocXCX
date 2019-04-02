@@ -13,7 +13,6 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    console.log(app)
     app.request.get('/api/v1/doc/list').then(res => {
       this.setData({
         docs: res.list
@@ -24,7 +23,6 @@ Page({
    * 进入文档详情
    */
   inDetails: function (e) {
-    console.log(e);
     let title = e.currentTarget.dataset.title;
     let url = e.currentTarget.dataset.url;
     wx.navigateTo({
