@@ -39,6 +39,7 @@ function get(url) {
 }
 
 function getMd(url) {
+    url = url[0] === '/' ? url : '/' + url;
     let req = DEFAULT_REQ;
     req.url = url;
     req.method = 'GET';

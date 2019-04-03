@@ -27,7 +27,7 @@ Page({
     let title = e.currentTarget.dataset.title;
     let url = e.currentTarget.dataset.url;
     wx.navigateTo({
-      url: "/pages/markdown/markdown?title=/"+title+"&url="+url
+      url: "/pages/markdown/markdown?title="+title+"&url="+url
     });
   },
 
