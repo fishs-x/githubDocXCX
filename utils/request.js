@@ -1,4 +1,4 @@
-const HOST = 'https://xxx.cn';
+const HOST = 'https://xcs.fluobo.cn';
 let DEFAULT_REQ = {url: "", data: {}, method: "GET", header: {'Content-Type': 'application/json'}};
 const request = function (obj) {
     return new Promise(function (resolve, reject) {
@@ -39,6 +39,7 @@ function get(url) {
 }
 
 function getMd(url) {
+    url = url[0] === '/' ? url : '/' + url;
     let req = DEFAULT_REQ;
     req.url = url;
     req.method = 'GET';
