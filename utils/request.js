@@ -33,6 +33,18 @@ function get(url) {
     let req = DEFAULT_REQ;
     req.url = url;
     req.method = 'GET';
+    req.header = { 'Content-Type': 'application/json' };
+    return request(req).then(res => {
+        return res.data.data;
+    });
+}
+
+function post(url, data) {
+    let req = DEFAULT_REQ;
+    req.url = url;
+    req.data = data;
+    req.method = 'POST';
+    req.header = { 'Content-Type': 'application/json' };
     return request(req).then(res => {
         return res.data.data;
     });
@@ -49,7 +61,19 @@ function getMd(url) {
     });
 }
 
+function getFiles(path, dir) {
+    let req = DEFAULT_REQ;
+    req.url = '/api/v1/list/dir';
+    req.method = 'POST';
+    req.header = { 'Content-Type': 'application/json' };
+    req.data = {path: path, dir:dir};
+    return request(req).then(res=>{
+        return res.data.data;
+    });
+}
+
 module.exports = {
     get: get,
-    getMd: getMd
+    getMd: getMd,
+    getFiles: getFiles
 };

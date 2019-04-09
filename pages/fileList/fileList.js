@@ -1,35 +1,23 @@
-// pages/index.js
-const app = getApp();
+// pages/fileList/fileList.js
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    docs: []
+    fileList: [
+      "Java", 
+      "JavaScript", 
+      "Python", 
+      "C++"
+    ]
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    app.request.get('/api/v1/doc/list').then(res => {
-      this.setData({
-        docs: res.list
-      });
-    });
-  },
-  /**
-   * 进入文档详情
-   */
-  inDetails: function (e) {
-    let title = e.currentTarget.dataset.title;
-    let url = e.currentTarget.dataset.url;
-    let author = e.currentTarget.dataset.author;
-    wx.navigateTo({
-      url: "/pages/markdown/markdown?title="+title+"&url="+title+"&author="+author+"&dir=true",
-      // url: "/pages/fileList/fileList"
-    });
+
   },
 
   /**

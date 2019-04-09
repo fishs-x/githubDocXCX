@@ -7,7 +7,10 @@ Page({
    * 页面的初始数据
    */
   data: {
+    fiels: [],
     title: '',
+    dir: true,
+    author: '',
     article: {},
     lock: {},
   },
@@ -17,7 +20,9 @@ Page({
    */
   onLoad: function (options) {
     this.data.title = options.title;
-    this.getMd(options.url);
+    this.data.author = options.author;
+    this.data.dir = Boolean(options.dir);
+    this.getdirList(options.url, options.dir, true);
     this['event_bind_touchstart'] = (event) => {
       this.onClickHref(event);
     }
@@ -30,31 +35,20 @@ Page({
 
   },
 
-  /**
-   * 点击跳转页面
-   */
-  onClickHref: function (e) {
-    let url = e.target.dataset._el.attr.href;
-<<<<<<< HEAD
-    // 判断url是否存在
+  isLock: function(url) {
     if (!url || this.data.lock[url]) {
-=======
-    let DistrUrl = url;
-    console.log('befor', url);
-    // 判断url是否存在
-    if (!url || this.data.lock[DistrUrl]) {
-      console.log('被锁了');
->>>>>>> ebc1f30fd6e85bc5baa7a53db7d0c7ebcb1aafb7
-      return;
+      return true;
     }
-    // 加锁
     let that = this;
-    this.data.lock[DistrUrl] = true;
+    this.data.lock[url] = true;
     // 500ms 解锁
     setTimeout(function () {
-      that.data.lock[DistrUrl] = false;
+      that.data.lock[url] = false;
     }, 500);
+    return false;
+  },
 
+  isSupport: function(url) {
     let msg = '';
     // 判断是否为锚点
     if (url[0] === '#') {
@@ -65,37 +59,76 @@ Page({
         "title": msg,
         "icon": "none",
       });
-      return;
+      return false;
     }
+    return true;
+  },
+  /**
+   * 点击跳转页面
+   * 跳转markdown 路径发现三种情况
+   * 1. 路径带作者与项目名称的
+   * 2. url 是相对路径的
+   */
+  onClickHref: function (e) {
+    let url = e.target.dataset._el.attr.href;
+    if(this.isLock(url)) {
+      return
+    }
+    if (!this.isSupport(url)) {
+      return
+    }
+    console.log('befor', url);
+
     if (url.indexOf('http') < 0) {
       if (url.indexOf(this.data.title) < 0) {
         url = this.data.title + '/' + url;
       }
       url = 'https://' + url;
     }
-
     let urlObj = urlJs(url);
     console.log('after', urlObj);
-    if (urlObj.domain !== that.data.title && urlObj.domain != 'github.com') {
+
+    if (urlObj.domain !== this.data.title && urlObj.domain != 'github.com') {
       this.clientCopy(urlObj.href);
       return;
-    } else if (urlObj.domain === that.data.title) {
+    } else if (urlObj.domain === this.data.title) {
       urlObj.path = '/' + urlObj.domain + urlObj.path;
+    } else if (urlObj.path.indexOf(this.data.author) > 0) {
+      urlObj.path = urlObj.path.substr(this.data.author.length + urlObj.path.indexOf(this.data.author));
     }
-    console.log(urlObj, 'xxx');
 
-    // TODO 图片加载路径不正确、作者目录加到mysql
-    // 目录太深找不到问题
-    // let splNum = url.lastIndexOf('\/');
-    // this.data.title += url.substr(0, splNum);
-    // url = url.substr(splNum);
-    // 跳转 
-    // TODO notes/%E6%B5%B7%E9%87%8F%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86.md 中的nodes需要天津到title中
+    // 没有找到.说明是目标
+    if (urlObj.path.indexOf('.') < 0) {
+      app.request.getFiles(urlObj.path, this.data.title).then(res=>{
+        console.log(res);
+      });
+    }
     // wx.navigateTo({
     //   url: "/pages/markdown/markdown?title="+this.data.title+"&url="+url
     // });
   },
 
+  /**
+   * 目录文件详情
+   * @param {*} e 
+   */
+  onClickFile: function(e) {
+    let data = e.target.dataset;
+    if (data.dir) {
+      wx.navigateTo({
+        url: "/pages/markdown/markdown?title="+this.data.title+"&url="+data.path+"&author="+this.data.author+"&dir=true",
+      });
+      this.getdirList(data.path, data.dir, true);
+    } else {
+      if (data.path.substr('.md') < 0) {
+        wx.navigateTo({
+          url: "/pages/content/content?path=" + data.path,
+        });
+      } else {
+        this.getMd(data.path);
+      }
+    }
+  },
   /**
    * 点击复制
    */
@@ -146,15 +179,42 @@ Page({
 
   },
   getMd: function (url) {
-    app.request.getMd(this.data.title + url).then(res => {
-      if (res.length >= 1048576) {
-        res = res.substr(0, 1048576);
-      }
+    app.request.getMd(url).then(res => {
       wx.showLoading({ title: '加载中…' });
+      if (typeof(res) === 'object') {
+        res = JSON.stringify(res);
+      }
       let data = app.towxml.toJson(res, 'markdown');
       data = app.towxml.initData(data, { base: 'https://xcs.fluobo.cn' + this.data.title + '/', app: this });
-      wx.hideLoading()
-      this.setData({ article: data, });
+      if (data.child.length >= 130) {
+        data.child = data.child.slice(0, 130);
+      }
+      this.setData({ article: data});
+      wx.hideLoading();
+    });
+  },
+
+  /**
+   * 
+   * @param {string} path 请求路径
+   * @param {boolean} dir 是否为目录
+   * @param {boolean} first 是否为onLoad调用
+   */
+  getdirList: function(path, dir, first=false) {
+    if (path[0] !== '/') {
+      path = '/' + path;
+    }
+    app.request.getFiles(path, dir).then(res => {
+      let haveReadme = false;
+      if (first) {
+        res.list.forEach(element => {
+          if (element.file_name.toUpperCase()==='README.MD'){
+            haveReadme = true;
+            this.getMd(path+"/"+element.file_name);          
+          }
+        });
+      }
+      this.setData(haveReadme ? {fiels: res.list} : {fiels: res.list, article: {}})
     });
   }
 })

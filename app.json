@@ -1,7 +1,9 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/markdown/markdown"
+    "pages/markdown/markdown",
+    "pages/fileList/fileList",
+    "pages/content/content"
   ],
   "window": {
     "backgroundTextStyle": "light",

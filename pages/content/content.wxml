@@ -1,0 +1,8 @@
+<!--pages/content/content.wxml-->
+<view class="h2w h2w-light" role="" aria-label="">
+    <view class="h2w__main" role="" aria-label="">
+        <view class="h2w__pre">
+            <text class="h2w__code">{{code}}</text>
+        </view>
+    </view>
+</view>

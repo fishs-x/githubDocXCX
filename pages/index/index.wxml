@@ -5,7 +5,7 @@
 		<view class="h2w__main" role="" aria-label="">
 				<view role="" aria-label="" wx:for="{{docs}}" wx:key="{{index}}">
 						<view class="h2w__h5" role="" aria-label="">
-								<navigator bindtap="inDetails" class="h2w__a" data-title="{{item.title}}" data-url="{{item.url}}" id="{{item.id}}" url="{{item.url}}" role="navigation" aria-label="">
+								<navigator bindtap="inDetails" class="h2w__a" data-title="{{item.title}}" data-author="{{item.author}}" data-url="{{item.url}}" id="{{item.id}}" url="{{item.url}}" role="navigation" aria-label="">
 										{{item.title}}
 								</navigator>
 						</view>
