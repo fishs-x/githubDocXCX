@@ -7,6 +7,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    showBack: false,
     fiels: [],
     title: '',
     dir: true,
@@ -115,9 +116,9 @@ Page({
   onClickFile: function(e) {
     let data = e.target.dataset;
     if (data.dir) {
-      wx.navigateTo({
-        url: "/pages/markdown/markdown?title="+this.data.title+"&url="+data.path+"&author="+this.data.author+"&dir=true",
-      });
+      // wx.navigateTo({
+      //   url: "/pages/markdown/markdown?title="+this.data.title+"&url="+data.path+"&author="+this.data.author+"&dir=true",
+      // });
       this.getdirList(data.path, data.dir, true);
     } else {
       if (data.path.substr('.md') < 0) {
@@ -128,6 +129,13 @@ Page({
         this.getMd(data.path);
       }
     }
+  },
+  goBack: function(e) {
+    let path = this.data.fiels[0].path;
+    let pathArr = path.split('/').slice(0, -2);
+    path = pathArr.join('/');
+    console.log(path);
+    this.getdirList(path, true, true);
   },
   /**
    * 点击复制
@@ -214,7 +222,14 @@ Page({
           }
         });
       }
-      this.setData(haveReadme ? {fiels: res.list} : {fiels: res.list, article: {}})
+      let showBack = false;
+      if (res.list.length>0) {
+        let path = res.list[0].path;
+        if (path.split('/').length > 3) {
+          showBack = true;
+        }
+      }
+      this.setData(haveReadme ? {fiels: res.list, showBack: showBack} : {fiels: res.list, article: {}, showBack: showBack})
     });
-  }
+  },
 })
