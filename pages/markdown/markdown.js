@@ -78,7 +78,7 @@ Page({
     if (!this.isSupport(url)) {
       return
     }
-    console.log('befor', url);
+    console.log('befor', url, e);
 
     if (url.indexOf('http') < 0) {
       if (url.indexOf(this.data.title) < 0) {
@@ -98,15 +98,9 @@ Page({
       urlObj.path = urlObj.path.substr(this.data.author.length + urlObj.path.indexOf(this.data.author));
     }
 
-    // 没有找到.说明是目标
-    if (urlObj.path.indexOf('.') < 0) {
-      app.request.getFiles(urlObj.path, this.data.title).then(res=>{
-        console.log(res);
-      });
-    }
-    // wx.navigateTo({
-    //   url: "/pages/markdown/markdown?title="+this.data.title+"&url="+url
-    // });
+    app.request.post('/api/v1/select/file', {path: urlObj.path.split('/').reverse(), title: this.data.title}).then(res=>{
+      console.log(res);
+    });
   },
 
   /**
@@ -116,9 +110,6 @@ Page({
   onClickFile: function(e) {
     let data = e.target.dataset;
     if (data.dir) {
-      // wx.navigateTo({
-      //   url: "/pages/markdown/markdown?title="+this.data.title+"&url="+data.path+"&author="+this.data.author+"&dir=true",
-      // });
       this.getdirList(data.path, data.dir, true);
     } else {
       if (data.path.substr('.md') < 0) {
@@ -134,7 +125,6 @@ Page({
     let path = this.data.fiels[0].path;
     let pathArr = path.split('/').slice(0, -2);
     path = pathArr.join('/');
-    console.log(path);
     this.getdirList(path, true, true);
   },
   /**
@@ -188,12 +178,18 @@ Page({
   },
   getMd: function (url) {
     app.request.getMd(url).then(res => {
+      if (!res) {
+        return
+      }
       wx.showLoading({ title: '加载中…' });
       if (typeof(res) === 'object') {
         res = JSON.stringify(res);
       }
       let data = app.towxml.toJson(res, 'markdown');
       data = app.towxml.initData(data, { base: 'https://xcs.fluobo.cn' + this.data.title + '/', app: this });
+      if (!data.child) {
+        data.child = []
+      }
       if (data.child.length >= 130) {
         data.child = data.child.slice(0, 130);
       }
@@ -213,6 +209,9 @@ Page({
       path = '/' + path;
     }
     app.request.getFiles(path, dir).then(res => {
+      if (!res) {
+        return;
+      }
       let haveReadme = false;
       if (first) {
         res.list.forEach(element => {
