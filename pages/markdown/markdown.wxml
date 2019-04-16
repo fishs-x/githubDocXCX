@@ -17,4 +17,6 @@
         </view>
     </view>
 </view>
-<template is="entry" data="{{...article}}" />
+<view wx:for="{{[article_0, article_1, article_2]}}" wx:key="{{index}}" >
+  <template is="entry" data="{{...item}}" />
+</view>
