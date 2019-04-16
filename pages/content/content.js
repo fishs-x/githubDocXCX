@@ -7,6 +7,7 @@ Page({
    */
   data: {
     code: '',
+    article: '',
     isMD: false
   },
 
@@ -15,7 +16,20 @@ Page({
    */
   onLoad: function (options) {
     app.request.getMd(options.path).then(res=>{
-      this.setData({code: res});
+      let isMd = options.path.search('.md') > 0;
+      if (!isMd) {
+        this.setData({code: res, isMD: isMd});
+        return 
+      }
+      let data = app.towxml.toJson(res, 'markdown');
+        data = app.towxml.initData(data, { base: 'https://xcs.fluobo.cn' + this.data.title + '/', app: this });
+        if (!data.child) {
+          data.child = []
+        }
+        if (data.child.length >= 130) {
+          data.child = data.child.slice(0, 130);
+        }
+        this.setData({article: data, isMD: isMd});
     });
   },
 

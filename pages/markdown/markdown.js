@@ -78,7 +78,6 @@ Page({
     if (!this.isSupport(url)) {
       return
     }
-    console.log('befor', url, e);
 
     if (url.indexOf('http') < 0) {
       if (url.indexOf(this.data.title) < 0) {
@@ -87,7 +86,6 @@ Page({
       url = 'https://' + url;
     }
     let urlObj = urlJs(url);
-    console.log('after', urlObj);
 
     if (urlObj.domain !== this.data.title && urlObj.domain != 'github.com') {
       this.clientCopy(urlObj.href);
@@ -99,7 +97,20 @@ Page({
     }
 
     app.request.post('/api/v1/select/file', {path: urlObj.path.split('/').reverse(), title: this.data.title}).then(res=>{
-      console.log(res);
+      if (!res.path) {
+        wx.showToast({
+          "title": '未找到文件',
+          "icon": "none",
+        });
+        return 
+      }
+      if (res.is_dir) {
+        this.getdirList(res.path, res.is_dir, true);
+      } else {
+        wx.navigateTo({
+          url: "/pages/content/content?path=" + res.path,
+        });
+      }
     });
   },
 
@@ -112,7 +123,7 @@ Page({
     if (data.dir) {
       this.getdirList(data.path, data.dir, true);
     } else {
-      if (data.path.substr('.md') < 0) {
+      if (data.path.search('.md') < 0) {
         wx.navigateTo({
           url: "/pages/content/content?path=" + data.path,
         });
