@@ -8,7 +8,11 @@ Page({
   data: {
     docs: []
   },
-
+  fankiu: function () {
+    wx.navigateTo({
+      url: "/pages/feedback/feedback"
+    });
+  },
   /**
    * 生命周期函数--监听页面加载
    */
@@ -27,8 +31,7 @@ Page({
     let url = e.currentTarget.dataset.url;
     let author = e.currentTarget.dataset.author;
     wx.navigateTo({
-      url: "/pages/markdown/markdown?title="+title+"&url="+title+"&author="+author+"&dir=true",
-      // url: "/pages/fileList/fileList"
+      url: "/pages/markdown/markdown?title="+title+"&url="+title+"&author="+author+"&dir=true"
     });
   },
 
@@ -64,7 +67,11 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-
+    app.request.get('/api/v1/list/doc').then(res => {
+      this.setData({
+        docs: res.list
+      });
+    });
   },
 
   /**

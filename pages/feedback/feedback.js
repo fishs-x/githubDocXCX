@@ -1,18 +1,30 @@
-// pages/fileList/fileList.js
+// pages/feedback/feedback.js
+const app = getApp();
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    fileList: [
-      "Java", 
-      "JavaScript", 
-      "Python", 
-      "C++"
-    ]
-  },
 
+  },
+  feedback: function (e) {
+    let content = e.detail.value.content;
+    if (!content) {
+      wx.showToast({
+        "title": '内容不能为空',
+        "icon": "none",
+      });
+      return
+    }
+    app.request.post('/api/v1/feedback', {msg: content}).then(res=>{
+      wx.showToast({
+        "title": '提交成功',
+        "icon": "none",
+      });
+    })
+
+  },
   /**
    * 生命周期函数--监听页面加载
    */

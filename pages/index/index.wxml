@@ -15,3 +15,4 @@
 				</view>
 		</view>
 </view>
+<view class='bar' bindtap="fankiu"></view>

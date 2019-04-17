@@ -1,0 +1,22 @@
+<view class="page" xmlns:wx="http://www.w3.org/1999/xhtml">
+    <view class="page__hd">
+        <!-- <view class="page__title">  反馈问题</view> -->
+        <!-- <view class="page__desc"></view> -->
+    </view>
+    <form bindsubmit="feedback">
+      <view class="page__bd">
+          <view class="weui-toptips weui-toptips_warn" wx:if="{{showTopTips}}">错误提示</view>
+          <view class="weui-cells__title">MarkDown文档收录、优化建议、为了方便联系,您可以留下您的邮箱</view>
+          <view class="weui-cells weui-cells_after-title">
+              <view class="weui-cell">
+                  <view class="weui-cell__bd">
+                      <textarea name="content" class="weui-textarea" placeholder="请输入要反馈的内容" style="height: 8.8em" />
+                  </view>
+              </view>
+          </view>
+          <view class="weui-btn-area">
+              <button formType="submit" class="weui-btn" type="primary">提交</button>
+          </view>
+      </view>
+    </form>
+</view>
