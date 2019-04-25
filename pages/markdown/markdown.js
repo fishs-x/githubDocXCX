@@ -12,9 +12,7 @@ Page({
     title: '',
     dir: true,
     author: '',
-    article_0: {},
-    article_1: {},
-    article_2: {},
+    article: [],
     lock: {},
   },
 
@@ -58,6 +56,7 @@ Page({
       msg = '不支持锚点';
     }
     if (msg !== '') {
+      console.log(msg, '2222')
       wx.showToast({
         "title": msg,
         "icon": "none",
@@ -203,13 +202,12 @@ Page({
       if (!data.child) {
         data.child = []
       }
-      let mdData = [];
       for (let i = 0; i < Math.ceil(data.child.length / 130); i++) {
         let s = i * 130;
         let e = s + 130;
         let node = {child: data.child.slice(s, e), node: data.node, id: data.id, theme: data.theme}
-        let fild = 'article_' + i;
-        this.setData({ [fild]: node });
+        let fild = 'article['+i+']'
+        this.setData({[fild]: node})
         // break;
       }
       wx.hideLoading();

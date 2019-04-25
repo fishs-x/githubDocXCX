@@ -7,7 +7,7 @@ Page({
    */
   data: {
     code: '',
-    article: '',
+    article: [],
     isMD: false
   },
 
@@ -21,15 +21,21 @@ Page({
         this.setData({code: res, isMD: isMd});
         return 
       }
+      wx.showLoading({ title: '加载中…' });
       let data = app.towxml.toJson(res, 'markdown');
         data = app.towxml.initData(data, { base: 'https://xcs.fluobo.cn' + this.data.title + '/', app: this });
         if (!data.child) {
           data.child = []
         }
-        if (data.child.length >= 130) {
-          data.child = data.child.slice(0, 130);
+        for (let i = 0; i < Math.ceil(data.child.length / 130); i++) {
+          let s = i * 130;
+          let e = s + 130;
+          let node = {child: data.child.slice(s, e), node: data.node, id: data.id, theme: data.theme}
+          let fild = 'article['+i+']'
+          this.setData({[fild]: node})
+          // break;
         }
-        this.setData({article: data, isMD: isMd});
+        wx.hideLoading();
     });
   },
 

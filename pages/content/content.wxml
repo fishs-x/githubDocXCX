@@ -7,4 +7,6 @@
         </view>
     </view>
 </view>
-<template wx:if="{{isMD}}" is="entry" data="{{...article}}"/>
+<view wx:for="{{article}}" wx:key="{{index}}" >
+  <template is="entry" data="{{...item}}" />
+</view>
