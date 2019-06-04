@@ -10,3 +10,4 @@
 <view wx:for="{{article}}" wx:key="{{index}}" >
   <template is="entry" data="{{...item}}" />
 </view>
+<ad unit-id="adunit-2ec3832dde03fe99"></ad>
