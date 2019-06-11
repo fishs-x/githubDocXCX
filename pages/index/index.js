@@ -31,7 +31,7 @@ Page({
     let url = e.currentTarget.dataset.url;
     let author = e.currentTarget.dataset.author;
     wx.navigateTo({
-      url: "/pages/markdown/markdown?title="+title+"&url="+title+"&author="+author+"&dir=true"
+      url: "/pages/markdown/markdown?title=" + title + "&url=" + url+"&author="+author+"&dir=true"
     });
   },
 

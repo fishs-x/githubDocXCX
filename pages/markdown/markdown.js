@@ -10,10 +10,11 @@ Page({
     showBack: false,
     fiels: [],
     title: '',
-    dir: true,
+    dir: false,
     author: '',
     article: [],
     lock: {},
+    index: 'README.md'
   },
 
   /**
@@ -21,9 +22,12 @@ Page({
    */
   onLoad: function (options) {
     this.data.title = options.title;
+    if (options.url[0] == '/') {
+      this.data.index = options.url.substr(1);
+    }
     this.data.author = options.author;
     this.data.dir = Boolean(options.dir);
-    this.getdirList(options.url, options.dir, true);
+    this.getdirList(options.title, options.dir, true);
     this['event_bind_touchstart'] = (event) => {
       this.onClickHref(event);
     }
@@ -230,12 +234,21 @@ Page({
       }
       let haveReadme = false;
       if (first) {
+        let md = '';
         res.list.forEach(element => {
           if (element.file_name.toUpperCase()==='README.MD'){
             haveReadme = true;
-            this.getMd(path+"/"+element.file_name);          
+            md = element.file_name;          
+          }
+          
+          if (element.file_name.toUpperCase() === this.data.index.toUpperCase()) {
+            haveReadme = true;
+            md = element.file_name;
           }
         });
+        if (haveReadme) {
+          this.getMd(path + "/" + md);
+        }
       }
       let showBack = false;
       if (res.list.length>0) {
