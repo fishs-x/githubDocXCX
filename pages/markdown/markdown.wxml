@@ -17,8 +17,16 @@
         </view>
     </view>
 </view>
-<ad unit-id="adunit-441a850c4a10de3a"></ad>
+
+
+<view class="adx">
+    <ad unit-id="adunit-441a850c4a10de3a"></ad>
+</view>
+
 <view wx:for="{{article}}" wx:key="{{index}}" >
   <template is="entry" data="{{...item}}" />
 </view>
-<ad unit-id="adunit-43428b9cdd5a121c"></ad>
+
+<view class="adx">
+	<ad unit-id="adunit-43428b9cdd5a121c"></ad>
+</view>
